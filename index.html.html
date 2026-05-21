@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SkyLight RCM — Illuminating the Revenue Cycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ─────────────────────────────────────── */
+:root{
+  --bg:       #06080F;
+  --bg2:      #090D18;
+  --surface:  #0D1220;
+  --card:     #101627;
+  --card2:    #141C2F;
+  --blue:     #0EA5E9;
+  --blue2:    #3B82F6;
+  --violet:   #8B5CF6;
+  --cyan:     #22D3EE;
+  --emerald:  #10E8A0;
+  --emerald2: #34D399;
+  --text:     #F1F5F9;
+  --text2:    #94A3B8;
+  --text3:    #475569;
+  --border:   rgba(255,255,255,.07);
+  --border2:  rgba(255,255,255,.13);
+  --border3:  rgba(14,165,233,.2);
+  --gblue:    linear-gradient(135deg,#0EA5E9 0%,#8B5CF6 100%);
+  --gcyan:    linear-gradient(135deg,#22D3EE 0%,#0EA5E9 100%);
+  --gem:      linear-gradient(135deg,#10E8A0 0%,#22D3EE 100%);
+  --sh:       0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  --sh2:      0 0 0 1px rgba(14,165,233,.15),0 8px 32px rgba(14,165,233,.12),0 24px 48px rgba(0,0,0,.5);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--surface);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(14,165,233,.25)}
+
+/* ── GRAIN OVERLAY ──────────────────────────────── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35}
+
+/* ── ANNOUNCEMENT BAR ───────────────────────────── */
+.ann-bar{background:linear-gradient(90deg,rgba(14,165,233,.12) 0%,rgba(139,92,246,.12) 100%);border-bottom:1px solid rgba(14,165,233,.15);padding:8px 32px;display:flex;align-items:center;justify-content:center;gap:10px}
+.ann-badge{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:'JetBrains Mono',monospace}
+.ann-text{font-size:12.5px;color:var(--text2)}
+.ann-text strong{color:var(--text);font-weight:600}
+.ann-link{font-size:12.5px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:4px;transition:gap .15s}
+.ann-link:hover{gap:7px}
+.ann-sep{width:1px;height:12px;background:var(--border2)}
+
+/* ── UTILITY BAR ────────────────────────────────── */
+.util-bar{background:rgba(6,8,15,.95);border-bottom:1px solid var(--border);padding:6px 32px}
+.util-bar-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.util-bar-left{display:flex;align-items:center;gap:20px}
+.util-bar-left span{font-size:11.5px;color:var(--text3);display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace}
+.ubl-pulse{width:6px;height:6px;background:var(--emerald);border-radius:50%;animation:beat 2s infinite;flex-shrink:0}
+@keyframes beat{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,232,160,.4)}60%{opacity:.7;box-shadow:0 0 0 5px rgba(16,232,160,0)}}
+.util-bar-right{display:flex;align-items:center;gap:14px}
+.util-link{font-size:11.5px;color:var(--text3);transition:color .2s;font-weight:500}
+.util-link:hover{color:var(--text2)}
+.util-btn{font-size:11.5px;font-weight:600;padding:4px 13px;border-radius:6px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);color:var(--blue);transition:all .2s;cursor:pointer;font-family:'Inter',sans-serif}
+.util-btn:hover{background:rgba(14,165,233,.2);border-color:var(--blue)}
+
+/* ── NAVIGATION ─────────────────────────────────── */
+nav{background:rgba(6,8,15,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:8000;height:68px;display:flex;align-items:center;transition:background .3s}
+nav.scrolled{background:rgba(6,8,15,.97)}
+.nav-wrap{max-width:1320px;margin:0 auto;width:100%;padding:0 32px;display:flex;align-items:center}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:10px;margin-right:44px;flex-shrink:0;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(139,92,246,.2));border:1px solid rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.logo-icon::after{content:'';position:absolute;inset:-1px;background:linear-gradient(135deg,rgba(14,165,233,.3),rgba(139,92,246,.3));filter:blur(8px);opacity:.6;z-index:-1}
+.logo-icon svg{width:20px;height:20px}
+.logo-wordmark{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.logo-wordmark span{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Nav links */
+.nav-menu{display:flex;align-items:center;gap:1px;flex:1}
+.nav-item{position:relative}
+
+/* Hover trigger zone — keeps menu open while moving from btn to mega */
+.nav-item::after{content:'';position:absolute;top:100%;left:0;right:0;height:18px;z-index:1}
+
+.nav-btn{display:flex;align-items:center;gap:5px;padding:8px 13px;font-size:13.5px;font-weight:500;color:var(--text2);border:none;background:none;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif}
+.nav-btn:hover,.nav-item:hover .nav-btn{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-chevron{width:13px;height:13px;transition:transform .22s;opacity:.5;flex-shrink:0}
+.nav-item:hover .nav-chevron{transform:rotate(180deg)}
+
+/* Mega menus */
+.mega{position:absolute;top:calc(100% + 10px);left:0;background:var(--card);border:1px solid var(--border2);border-radius:var(--rl);box-shadow:0 24px 64px rgba(0,0,0,.7),0 0 0 1px rgba(14,165,233,.08);padding:10px;opacity:0;visibility:hidden;transform:translateY(-10px) scale(.97);transform-origin:top left;transition:opacity .2s ease,transform .2s ease,visibility .2s;pointer-events:none;z-index:9000;min-width:600px}
+.mega.narrow{min-width:280px}
+.mega.wide{min-width:680px}
+.nav-item:hover .mega{opacity:1;visibility:visible;transform:translateY(0) scale(1);pointer-events:all}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.mega-col-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:10px 12px 4px;font-family:'JetBrains Mono',monospace}
+.mega-item{display:flex;align-items:flex-start;gap:12px;padding:11px 12px;border-radius:10px;transition:background .15s;cursor:pointer;text-decoration:none}
+.mega-item:hover{background:rgba(255,255,255,.05)}
+.mega-divider{height:1px;background:var(--border);margin:6px 4px}
+.mi-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mi-icon.bl{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.2)}
+.mi-icon.vi{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.18)}
+.mi-icon.em{background:rgba(16,232,160,.08);border:1px solid rgba(16,232,160,.15)}
+.mi-icon svg{width:17px;height:17px}
+.mi-icon.bl svg{color:var(--blue)}
+.mi-icon.vi svg{color:#A78BFA}
+.mi-icon.em svg{color:var(--emerald)}
+.mi-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.3}
+.mi-desc{font-size:11.5px;color:var(--text3);line-height:1.4}
+
+/* Nav right */
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn-ghost{font-size:13.5px;font-weight:500;color:var(--text2);padding:8px 14px;border-radius:8px;border:none;background:none;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-ghost:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.btn-nav-cta{font-size:13.5px;font-weight:600;color:#fff;background:var(--gblue);border:none;border-radius:9px;padding:9px 20px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn-nav-cta:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 4px 20px rgba(14,165,233,.35)}
+
+/* Mobile toggle */
+.mob-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}
+.mob-toggle span{display:block;width:20px;height:2px;background:var(--text2);border-radius:1px}
+
+/* ── COMMON LAYOUT ───────────────────────────────── */
+section{padding:96px 32px}
+.container{max-width:1320px;margin:0 auto}
+.section-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.section-eyebrow::before{content:'';width:18px;height:1.5px;background:var(--gcyan);border-radius:1px}
+.section-h2{font-family:'Sora',sans-serif;font-size:clamp(28px,2.8vw,44px);font-weight:800;color:var(--text);letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px}
+.section-h2 .grad{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-sub{font-size:16px;color:var(--text2);line-height:1.75;max-width:560px}
+.text-center .section-eyebrow{justify-content:center}
+.text-center .section-eyebrow::before{display:none}
+
+/* ── HERO ────────────────────────────────────────── */
+#hero{padding:88px 32px 96px;background:var(--bg);position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+/* dot grid */
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px}
+/* glow orbs */
+.h-orb1{position:absolute;top:-200px;right:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.08) 0%,rgba(14,165,233,.05) 40%,transparent 70%)}
+.h-orb2{position:absolute;bottom:-300px;left:-150px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,.06) 0%,transparent 65%)}
+/* scan line */
+.h-scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(14,165,233,.35),transparent);animation:scan 9s ease-in-out infinite}
+@keyframes scan{0%,100%{top:20%;opacity:0}50%{top:80%;opacity:1}}
+
+.hero-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2}
+
+/* Left copy */
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:100px;padding:5px 14px 5px 8px;margin-bottom:22px}
+.hero-eyebrow .pulse{width:6px;height:6px;background:var(--emerald);border-radius:50%;animation:beat 2s infinite;flex-shrink:0}
+.hero-eyebrow span{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-family:'JetBrains Mono',monospace}
+
+.hero-h1{font-family:'Sora',sans-serif;font-size:clamp(30px,3.4vw,52px);font-weight:800;line-height:1.07;color:var(--text);letter-spacing:-1.5px;margin-bottom:14px}
+.hero-h1 .pct{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-h2{font-family:'Inter',sans-serif;font-size:clamp(13px,1.1vw,15.5px);font-weight:400;line-height:1.7;color:var(--text2);margin-bottom:32px;max-width:520px}
+.hero-h2 .spec{color:var(--cyan);font-weight:600}
+.hero-sub{font-size:16px;color:var(--text2);line-height:1.75;margin-bottom:36px;max-width:500px}
+.hero-sub strong{color:var(--text);font-weight:600}
+
+.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;font-size:14.5px;font-weight:600;color:#fff;background:var(--gblue);border:none;border-radius:10px;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(14,165,233,.35);opacity:.9}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;font-size:14.5px;font-weight:500;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;text-decoration:none}
+.btn-outline:hover{color:var(--text);background:rgba(255,255,255,.09);border-color:rgba(14,165,233,.3)}
+
+.hero-stats{display:flex;gap:0;border-top:1px solid var(--border);padding-top:28px}
+.hstat{flex:1;padding-right:28px;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none;padding-right:0;padding-left:28px}
+.hstat:nth-child(2){padding-left:28px}
+.hstat-num{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;letter-spacing:-1px}
+.hstat-num.c{color:var(--cyan)}
+.hstat-num.e{color:var(--emerald)}
+.hstat-num.b{color:#60A5FA}
+.hstat-label{font-size:11.5px;color:var(--text3)}
+
+/* Dashboard visual */
+.hero-visual{position:relative}
+.hero-dash{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:24px;position:relative;overflow:hidden;box-shadow:var(--sh2)}
+.hero-dash::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--blue2),var(--blue),var(--cyan))}
+.hd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.hd-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.hd-live{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--emerald);background:rgba(16,232,160,.08);border:1px solid rgba(16,232,160,.18);border-radius:100px;padding:3px 9px}
+.hd-live-dot{width:5px;height:5px;background:var(--emerald);border-radius:50%;animation:beat 1.5s infinite;flex-shrink:0}
+.hd-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.hdkpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:12px}
+.hdkpi-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1;color:var(--text)}
+.hdkpi-val.g{color:var(--emerald)}
+.hdkpi-val.b{color:var(--cyan)}
+.hdkpi-label{font-size:10px;color:var(--text3);margin-top:3px}
+.hd-bars{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.hdb-row{display:flex;flex-direction:column;gap:5px}
+.hdb-top{display:flex;justify-content:space-between;font-size:11.5px}
+.hdb-top span:first-child{color:var(--text2)}
+.hdb-top span:last-child{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
+.hdb-track{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.hdb-fill{height:100%;border-radius:3px}
+.fill-b{background:linear-gradient(90deg,var(--blue2),var(--cyan))}
+.fill-e{background:linear-gradient(90deg,#059669,var(--emerald))}
+.fill-w{background:linear-gradient(90deg,#D97706,#FBBF24)}
+.hd-chips{display:flex;flex-wrap:wrap;gap:5px}
+.hdc{font-size:10.5px;font-weight:500;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:3px 10px;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace}
+.hdc .dot{width:4px;height:4px;border-radius:50%}
+
+/* Float cards */
+.float-card{position:absolute;background:var(--card2);border:1px solid var(--border3);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 0 1px rgba(14,165,233,.08)}
+.fc-top{top:-36px;left:-36px;animation:float 4.5s ease-in-out infinite}
+.fc-bot{bottom:-28px;right:-36px;animation:float 4.5s ease-in-out infinite .8s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.fc-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fc-icon.b{background:rgba(14,165,233,.15);border:1px solid rgba(14,165,233,.25)}
+.fc-icon.e{background:rgba(16,232,160,.1);border:1px solid rgba(16,232,160,.2)}
+.fc-icon svg{width:16px;height:16px}
+.fc-icon.b svg{color:var(--blue)}
+.fc-icon.e svg{color:var(--emerald)}
+.fc-val{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.fc-lbl{font-size:10.5px;color:var(--text3)}
+
+/* ── TRUST BAND ─────────────────────────────────── */
+#trust{padding:18px 32px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.trust-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.trust-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.trust-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.trust-items{display:flex;gap:8px;flex-wrap:wrap}
+.tb{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;color:var(--text3);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px;transition:border-color .2s}
+.tb:hover{border-color:rgba(14,165,233,.25);color:var(--text2)}
+.tb svg{width:13px;height:13px;color:var(--blue);flex-shrink:0}
+
+/* ── SERVICES ────────────────────────────────────── */
+#services{background:var(--bg2)}
+.services-intro{text-align:center;max-width:620px;margin:0 auto 60px}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.svc-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:relative;overflow:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);cursor:default;display:flex;flex-direction:column;gap:14px}
+.svc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--blue2),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.svc-card:hover{border-color:rgba(14,165,233,.25);transform:translateY(-4px);box-shadow:var(--sh2)}
+.svc-card:hover::after{transform:scaleX(1)}
+.svc-card.highlight{border-color:rgba(14,165,233,.2);background:linear-gradient(145deg,rgba(14,165,233,.07),rgba(139,92,246,.06))}
+.svc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);transition:all .3s}
+.svc-card:hover .svc-icon{background:rgba(14,165,233,.18);box-shadow:0 0 16px rgba(14,165,233,.2)}
+.svc-icon svg{width:22px;height:22px;color:var(--blue)}
+.svc-icon.vi{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.2)}
+.svc-icon.vi svg{color:#A78BFA}
+.svc-icon.em{background:rgba(16,232,160,.08);border-color:rgba(16,232,160,.15)}
+.svc-icon.em svg{color:var(--emerald)}
+.svc-phase{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:6px;width:fit-content;font-family:'JetBrains Mono',monospace}
+.phase-front{background:rgba(14,165,233,.08);color:var(--blue);border:1px solid rgba(14,165,233,.15)}
+.phase-mid{background:rgba(139,92,246,.08);color:#A78BFA;border:1px solid rgba(139,92,246,.15)}
+.phase-back{background:rgba(16,232,160,.07);color:var(--emerald2);border:1px solid rgba(16,232,160,.12)}
+.phase-intel{background:linear-gradient(90deg,rgba(14,165,233,.08),rgba(139,92,246,.08));color:var(--cyan);border:1px solid rgba(14,165,233,.15)}
+.svc-card h3{font-family:'Sora',sans-serif;font-size:15.5px;font-weight:700;color:var(--text);letter-spacing:-.2px;line-height:1.3}
+.svc-card p{font-size:13px;color:var(--text2);line-height:1.65;flex:1}
+.svc-metrics{display:flex;gap:10px;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px}
+.svcm{flex:1;text-align:center}
+.svcm-val{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--text);line-height:1}
+.svcm-label{font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.svc-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--blue);transition:gap .15s}
+.svc-link:hover{gap:9px}
+.svc-link svg{width:14px;height:14px}
+
+/* ── HYBRID SECTION ──────────────────────────────── */
+#hybrid{background:var(--bg);position:relative;overflow:hidden}
+.hybrid-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hybrid-orb1{position:absolute;top:-200px;left:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.07) 0%,transparent 65%)}
+.hybrid-orb2{position:absolute;bottom:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,.05) 0%,transparent 65%)}
+.hybrid-neural{position:absolute;inset:0;width:100%;height:100%;opacity:.06}
+.hybrid-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;position:relative;z-index:2}
+.hybrid-desc{font-size:15px;color:var(--text2);line-height:1.75;margin-top:14px;margin-bottom:28px}
+.hybrid-desc strong{color:var(--text)}
+.hybrid-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hs-half{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.hs-half-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.hs-half-label.h{color:var(--emerald)}
+.hs-half-label.a{color:var(--blue)}
+.hs-li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text2);margin-bottom:9px}
+.hs-li:last-child{margin-bottom:0}
+.hs-li-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.hs-li-dot.h{background:var(--emerald)}
+.hs-li-dot.a{background:var(--blue)}
+
+/* Right hybrid */
+.hybrid-right{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.hc-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;position:relative;overflow:hidden}
+.hc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--blue2),var(--violet))}
+.hc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.hc-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.hc-live{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--emerald);background:rgba(16,232,160,.08);border:1px solid rgba(16,232,160,.15);border-radius:100px;padding:2px 8px}
+.hc-live-dot{width:5px;height:5px;background:var(--emerald);border-radius:50%;animation:beat 1.5s infinite}
+.hc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.hckpi{background:rgba(255,255,255,.04);border-radius:8px;padding:11px;text-align:center}
+.hckpi-val{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;line-height:1}
+.hckpi-val.g{color:var(--emerald)}
+.hckpi-val.w{color:var(--text)}
+.hckpi-label{font-size:9.5px;color:var(--text3);margin-top:3px}
+.hcb-row{display:flex;flex-direction:column;gap:5px;margin-bottom:9px}
+.hcb-top{display:flex;justify-content:space-between;font-size:11px}
+.hcb-top span:first-child{color:var(--text2)}
+.hcb-top span:last-child{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
+.hcb-track{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.hcb-fill{height:100%;border-radius:3px}
+.fill-blue{background:linear-gradient(90deg,var(--blue2),var(--cyan))}
+.fill-em{background:linear-gradient(90deg,#059669,var(--emerald))}
+.fill-warn{background:linear-gradient(90deg,#D97706,#FBBF24)}
+.hc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.hcc{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:3px 10px;font-family:'JetBrains Mono',monospace}
+.hcc .dot{width:4px;height:4px;border-radius:50%}
+.hcc.ai-tag{background:rgba(14,165,233,.1);color:var(--blue);border-color:rgba(14,165,233,.2)}
+
+/* AI full card */
+.ai-full-card{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(14,165,233,.06));border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.afc-left h3{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.3px}
+.afc-left p{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:20px}
+.afc-steps{display:flex;flex-direction:column;gap:12px}
+.afc-step{display:flex;align-items:flex-start;gap:12px}
+.afc-step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),var(--violet));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.afc-step-text h5{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.afc-step-text p{font-size:12px;color:var(--text3);line-height:1.4}
+.afc-right{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:20px}
+.afc-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.afc-stat{background:rgba(255,255,255,.04);border-radius:10px;padding:16px}
+.afc-stat-val{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.afc-stat-val.az{color:#60A5FA}
+.afc-stat-val.em{color:var(--emerald)}
+.afc-stat-label{font-size:11px;color:var(--text3)}
+
+/* ── ANALYTICS SECTION ───────────────────────────── */
+#analytics{background:var(--bg2)}
+.analytics-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;max-width:1320px;margin:0 auto}
+.analytics-list{display:flex;flex-direction:column;gap:18px;margin-top:28px}
+.al-row{display:flex;gap:14px;align-items:flex-start;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;transition:border-color .2s}
+.al-row:hover{border-color:rgba(14,165,233,.2)}
+.al-icon{width:40px;height:40px;border-radius:10px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.al-icon svg{width:19px;height:19px;color:var(--blue)}
+.al-row h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.al-row p{font-size:12.5px;color:var(--text2);line-height:1.55}
+.dash-mock{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:22px;position:relative;overflow:hidden;box-shadow:var(--sh2)}
+.dash-mock::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--blue2),var(--violet))}
+.dash-mock::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.15) 0%,transparent 65%);pointer-events:none}
+.dm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.dm-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.dm-dot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--emerald);font-weight:600}
+.dm-dot span{width:5px;height:5px;background:var(--emerald);border-radius:50%;animation:beat 1.5s infinite}
+.dm-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.dm-kpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:12px}
+.dm-kpi-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.dm-kpi-val.g{color:var(--emerald)}
+.dm-kpi-val.w{color:var(--text)}
+.dm-kpi-label{font-size:10px;color:var(--text3);margin-top:3px}
+.dm-bars-wrap{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+.dm-bars-title{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.dm-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.dm-bar-label{font-size:10.5px;color:var(--text3);width:90px;flex-shrink:0}
+.dm-bar-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.dm-bar-fill{height:100%;border-radius:3px}
+.dm-bar-val{font-size:10.5px;color:var(--text2);width:30px;text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.dm-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dm-mini{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.dm-mini-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.dm-mini-label{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* ── METRICS BAND ─────────────────────────────────── */
+#metrics{background:var(--surface);padding:64px 32px;position:relative;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.metrics-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:300px;background:radial-gradient(ellipse,rgba(14,165,233,.06) 0%,transparent 70%);pointer-events:none}
+.metrics-grid{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:40px;text-align:center;position:relative;z-index:2}
+.metric-item .m-num{font-family:'Sora',sans-serif;font-size:48px;font-weight:800;background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1}
+.metric-item .m-suf{font-size:48px;font-weight:800}
+.metric-item .m-label{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.45}
+.metric-item .m-line{width:32px;height:1.5px;background:rgba(14,165,233,.3);margin:12px auto 0;border-radius:1px}
+
+/* ── PROCESS ──────────────────────────────────────── */
+#process{background:var(--bg)}
+.process-header{text-align:center;max-width:560px;margin:0 auto 64px}
+.process-steps{display:flex;gap:0;position:relative;max-width:1100px;margin:0 auto}
+.process-steps::before{content:'';position:absolute;top:44px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,rgba(14,165,233,.05),rgba(14,165,233,.3),rgba(139,92,246,.3),rgba(14,165,233,.05));z-index:0}
+.ps{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 12px;position:relative;z-index:1}
+.ps-num{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),var(--violet));color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 0 4px rgba(14,165,233,.12),0 0 20px rgba(14,165,233,.2);flex-shrink:0;font-family:'Sora',sans-serif}
+.ps-icon{width:32px;height:32px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.ps-icon svg{width:16px;height:16px;color:var(--blue)}
+.ps h4{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px}
+.ps p{font-size:12px;color:var(--text3);line-height:1.55}
+
+/* ── TESTIMONIALS ────────────────────────────────── */
+#social-proof{background:var(--bg2)}
+.tp-header{text-align:center;max-width:540px;margin:0 auto 48px}
+.tp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tp-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px;position:relative;transition:all .25s;overflow:hidden}
+.tp-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--blue2),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.tp-card:hover{border-color:rgba(14,165,233,.2);transform:translateY(-3px);box-shadow:var(--sh2)}
+.tp-card:hover::after{transform:scaleX(1)}
+.tp-result{position:absolute;top:18px;right:18px;font-size:10.5px;font-weight:700;color:var(--emerald);background:rgba(16,232,160,.08);border:1px solid rgba(16,232,160,.18);border-radius:7px;padding:3px 9px;font-family:'JetBrains Mono',monospace}
+.tp-quote-mark{font-family:'Sora',sans-serif;font-size:48px;background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:10px;opacity:.4}
+.tp-card p{font-size:13.5px;color:var(--text2);line-height:1.7;font-style:italic;margin-bottom:22px}
+.tp-author{display:flex;align-items:center;gap:11px;padding-top:16px;border-top:1px solid var(--border)}
+.tp-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),var(--violet));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Sora',sans-serif}
+.tp-name{font-size:13px;font-weight:600;color:var(--text)}
+.tp-role{font-size:11.5px;color:var(--text3)}
+
+/* ── RESOURCES ───────────────────────────────────── */
+#resources{background:var(--bg)}
+.res-header-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px}
+.res-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .25s}
+.res-card:hover{border-color:rgba(14,165,233,.2);transform:translateY(-2px);box-shadow:var(--sh2)}
+.res-img{height:140px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.res-img.az{background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(59,130,246,.08))}
+.res-img.em{background:linear-gradient(135deg,rgba(16,232,160,.08),rgba(52,211,153,.06))}
+.res-img.in{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(167,139,250,.06))}
+.res-img svg{width:40px;height:40px;opacity:.5}
+.res-body{padding:20px}
+.res-meta{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.res-type{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-family:'JetBrains Mono',monospace}
+.res-date{font-size:10.5px;color:var(--text3)}
+.res-card h3{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:7px}
+.res-card p{font-size:12.5px;color:var(--text2);line-height:1.6}
+.res-card.featured .res-img{height:180px}
+.res-card.featured h3{font-size:17px}
+
+/* ── CTA BAND ────────────────────────────────────── */
+#cta{background:var(--bg2);padding:96px 32px;position:relative;overflow:hidden}
+.cta-orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(14,165,233,.07) 0%,transparent 70%);pointer-events:none}
+.cta-inner{max-width:760px;margin:0 auto;text-align:center;position:relative;z-index:2}
+.cta-inner .section-eyebrow{justify-content:center;color:var(--emerald)}
+.cta-inner .section-eyebrow::before{background:var(--gem)}
+.cta-inner h2{font-family:'Sora',sans-serif;font-size:clamp(26px,3.2vw,44px);font-weight:800;color:var(--text);letter-spacing:-1px;margin-bottom:16px;line-height:1.08}
+.cta-inner p{font-size:17px;color:var(--text2);margin-bottom:36px;line-height:1.7;font-weight:300}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-cta-em{padding:14px 28px;font-size:14.5px;font-weight:700;color:var(--bg);background:var(--gem);border:none;border-radius:11px;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-cta-em:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(16,232,160,.3);opacity:.9}
+.btn-cta-ghost{padding:13px 26px;font-size:14.5px;font-weight:500;color:var(--text2);background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:11px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;text-decoration:none}
+.btn-cta-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.cta-trust-row{display:flex;gap:22px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.ctr-item{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.ctr-item svg{width:13px;height:13px;color:var(--emerald)}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer{background:#04060D;padding:72px 32px 0;border-top:1px solid var(--border)}
+.footer-wrap{max-width:1320px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1.2fr;gap:48px;padding-bottom:52px;border-bottom:1px solid var(--border)}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,rgba(14,165,233,.15),rgba(139,92,246,.15));border:1px solid rgba(14,165,233,.25);display:flex;align-items:center;justify-content:center}
+.footer-logo-icon svg{width:17px;height:17px}
+.footer-logo-wm{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--text)}
+.footer-logo-wm span{background:var(--gblue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.footer-desc{font-size:13px;color:var(--text3);line-height:1.7;max-width:260px;margin-bottom:18px}
+.footer-socials{display:flex;gap:7px}
+.fsoc{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);transition:all .2s;cursor:pointer}
+.fsoc:hover{background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.25);color:var(--blue)}
+.footer-col h5{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,.35);transition:color .15s}
+.footer-col li a:hover{color:var(--text2)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:20px 0;font-size:11.5px;color:var(--text3);flex-wrap:wrap;gap:12px}
+.footer-bottom a{color:var(--text3);transition:color .15s}
+.footer-bottom a:hover{color:var(--text2)}
+.footer-bottom-links{display:flex;gap:16px;flex-wrap:wrap}
+.footer-contact-card{margin-top:18px;padding:14px;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.15);border-radius:10px}
+.footer-contact-card-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.footer-contact-card-num{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:3px}
+.footer-contact-card-hours{font-size:11px;color:var(--text3)}
+
+/* ── REVEALS ─────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .6s ease,transform .6s ease}
+.reveal-scale.vis{opacity:1;transform:scale(1)}
+
+/* ── MOBILE ──────────────────────────────────────── */
+@media(max-width:1060px){
+  .hero-inner,.hybrid-inner,.analytics-inner{grid-template-columns:1fr;gap:48px}
+  .hero-visual,.fc-top,.fc-bot{display:none}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .process-steps{flex-wrap:wrap;gap:24px}
+  .process-steps::before{display:none}
+  .ps{flex:0 0 calc(50% - 12px)}
+  .tp-grid,.res-grid,.footer-top{grid-template-columns:1fr}
+  .metrics-grid{grid-template-columns:repeat(3,1fr);gap:24px}
+  .ai-full-card{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  nav .nav-menu,.nav-right .btn-ghost,.nav-right .btn-nav-cta{display:none}
+  .mob-toggle{display:flex}
+  .svc-grid,.tp-grid{grid-template-columns:1fr}
+  section{padding:72px 20px}
+  #hero{padding:64px 20px 72px}
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-stats{flex-direction:column;gap:14px}
+  .hstat{border-right:none;border-bottom:1px solid var(--border);padding:0 0 14px;margin-bottom:0}
+  .hstat:last-child{border-bottom:none;padding:0}
+  .hstat:nth-child(2){padding:14px 0}
+  .ann-bar{flex-wrap:wrap;text-align:center;gap:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ANNOUNCEMENT BAR ══════════════════════════════════════════════════════ -->
+<div class="ann-bar">
+  <span class="ann-badge">New →</span>
+  <span class="ann-sep"></span>
+  <span class="ann-text"><strong>SkyLight 2026 RCM Benchmarking Report</strong> — See how your practice stacks up across 12 specialties.</span>
+  <span class="ann-sep"></span>
+  <a href="#resources" class="ann-link">Download Free Report <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+</div>
+
+<!-- ══ UTILITY BAR ═══════════════════════════════════════════════════════════ -->
+<div class="util-bar">
+  <div class="util-bar-inner">
+    <div class="util-bar-left">
+      <span><span class="ubl-pulse"></span>All Operations Nominal</span>
+      <span>📞 (800) 555-0101</span>
+    </div>
+    <div class="util-bar-right">
+      <a href="#" class="util-link">Support</a>
+      <a href="#" class="util-link">HIPAA Notice</a>
+      <a href="#" class="util-btn">Revenue Dashboard →</a>
+      <a href="#" class="util-link">Client Login</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAVIGATION ════════════════════════════════════════════════════════════ -->
+<nav id="main-nav">
+  <div class="nav-wrap">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 22 22" fill="none">
+          <circle cx="11" cy="11" r="4" fill="url(#lg-logo)" opacity=".9"/>
+          <path d="M11 2L11 7M11 15L11 20M2 11L7 11M15 11L20 11" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+          <path d="M4.9 4.9L7.8 7.8M14.2 14.2L17.1 17.1M4.9 17.1L7.8 14.2M14.2 7.8L17.1 4.9" stroke="#8B5CF6" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+          <defs><linearGradient id="lg-logo" x1="7" y1="7" x2="15" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#0EA5E9"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>
+        </svg>
+      </div>
+      <span class="logo-wordmark">SkyLight <span>RCM</span></span>
+    </a>
+
+    <!-- Nav -->
+    <div class="nav-menu">
+
+      <!-- Solutions -->
+      <div class="nav-item">
+        <button class="nav-btn">Solutions
+          <svg class="nav-chevron" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4.5l4.5 4.5 4.5-4.5"/></svg>
+        </button>
+        <div class="mega wide">
+          <div class="mega-grid">
+            <div>
+              <div class="mega-col-label">Patient Access — Front End</div>
+              <a class="mega-item" href="#services">
+                <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <div><div class="mi-title">Eligibility &amp; Benefits Verification</div><div class="mi-desc">Real-time pre-service coverage clearance</div></div>
+              </a>
+              <a class="mega-item" href="#services">
+                <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
+                <div><div class="mi-title">Prior Authorization</div><div class="mi-desc">CMS 2026 compliant — 72hr urgent turnaround</div></div>
+              </a>
+              <div class="mega-divider"></div>
+              <div class="mega-col-label">Mid-Cycle — Clinical Integrity</div>
+              <a class="mega-item" href="#services">
+                <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>
+                <div><div class="mi-title">Medical Coding</div><div class="mi-desc">AI-assisted NLP + AAPC/AHIMA certified coders</div></div>
+              </a>
+            </div>
+            <div>
+              <div class="mega-col-label">Revenue Recovery — Back End</div>
+              <a class="mega-item" href="#services">
+                <div class="mi-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+                <div><div class="mi-title">Denial Management &amp; Appeals</div><div class="mi-desc">AI drafting + specialist escalation</div></div>
+              </a>
+              <a class="mega-item" href="#services">
+                <div class="mi-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <div><div class="mi-title">AR Follow-Up</div><div class="mi-desc">Algorithmic prioritization — target 32–40d AR</div></div>
+              </a>
+              <div class="mega-divider"></div>
+              <div class="mega-col-label">Intelligence Layer</div>
+              <a class="mega-item" href="#analytics">
+                <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                <div><div class="mi-title">Reporting &amp; Analytics</div><div class="mi-desc">Real-time revenue intelligence dashboard</div></div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Who We Serve -->
+      <div class="nav-item">
+        <button class="nav-btn">Who We Serve
+          <svg class="nav-chevron" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4.5l4.5 4.5 4.5-4.5"/></svg>
+        </button>
+        <div class="mega narrow">
+          <a class="mega-item" href="#serve">
+            <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div><div class="mi-title">Mid-Sized Hospitals</div><div class="mi-desc">Enterprise RCM at independent economics</div></div>
+          </a>
+          <a class="mega-item" href="#serve">
+            <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <div><div class="mi-title">Multi-Specialty Clinics</div><div class="mi-desc">Unified billing across every discipline</div></div>
+          </a>
+          <a class="mega-item" href="#serve">
+            <div class="mi-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div><div class="mi-title">Ambulatory Surgery Centers</div><div class="mi-desc">Surgical billing precision — end-to-end</div></div>
+          </a>
+          <a class="mega-item" href="#serve">
+            <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div>
+            <div><div class="mi-title">Independent Practices</div><div class="mi-desc">Specialist billing for high-complexity specialties</div></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div class="nav-item">
+        <button class="nav-btn">Company
+          <svg class="nav-chevron" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4.5l4.5 4.5 4.5-4.5"/></svg>
+        </button>
+        <div class="mega narrow">
+          <a class="mega-item" href="#">
+            <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+            <div><div class="mi-title">About SkyLight</div><div class="mi-desc">Our mission, model &amp; global delivery approach</div></div>
+          </a>
+          <a class="mega-item" href="#">
+            <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="mi-title">Global Delivery Model</div><div class="mi-desc">24/7 asynchronous operations — overnight processing</div></div>
+          </a>
+          <a class="mega-item" href="#">
+            <div class="mi-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="mi-title">Security &amp; Compliance</div><div class="mi-desc">HIPAA · SOC 2 · HITRUST · AAPC/AHIMA</div></div>
+          </a>
+          <a class="mega-item" href="#">
+            <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6.109a9 9 0 011 3.678M8.879 6.109A9.015 9.015 0 008 9.787M8 6.109c0-1.105.895-2 2-2h4a2 2 0 012 2"/></svg></div>
+            <div><div class="mi-title">Careers</div><div class="mi-desc">Join the SkyLight team</div></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="nav-item">
+        <button class="nav-btn">Insights
+          <svg class="nav-chevron" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4.5l4.5 4.5 4.5-4.5"/></svg>
+        </button>
+        <div class="mega narrow">
+          <a class="mega-item" href="#resources">
+            <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <div><div class="mi-title">2026 Benchmark Report</div><div class="mi-desc">Industry KPIs across 12 specialties</div></div>
+          </a>
+          <a class="mega-item" href="#resources">
+            <div class="mi-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+            <div><div class="mi-title">Case Studies</div><div class="mi-desc">Real results from real healthcare partners</div></div>
+          </a>
+          <a class="mega-item" href="#">
+            <div class="mi-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div>
+            <div><div class="mi-title">Revenue Leakage Calculator</div><div class="mi-desc">Estimate your recovery potential instantly</div></div>
+          </a>
+          <a class="mega-item" href="#">
+            <div class="mi-icon bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg></div>
+            <div><div class="mi-title">Healthcare Blog</div><div class="mi-desc">RCM intelligence &amp; regulatory updates</div></div>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /nav-menu -->
+
+    <div class="nav-right">
+      <button class="btn-ghost">Client Login</button>
+      <button class="btn-nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Request Free Audit</button>
+    </div>
+
+    <button class="mob-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ══ HERO ═══════════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-dots"></div>
+    <div class="h-orb1"></div>
+    <div class="h-orb2"></div>
+    <div class="h-scan"></div>
+  </div>
+  <div class="hero-inner">
+
+    <!-- Left copy -->
+    <div class="reveal">
+      <div class="hero-eyebrow"><span class="pulse"></span><span>✦ Hybrid Revenue Intelligence</span></div>
+      <h1 class="hero-h1">Increase Your Practice Revenue by <span class="pct">15–25%</span> with Specialized Medical Billing</h1>
+      <h2 class="hero-h2">AI-Driven Medical Billing &amp; RCM Services for <span class="spec">Oncology, Ophthalmology, Oculoplastic, Dermatology,</span> and <span class="spec">Plastic Surgery</span> Practices.</h2>
+      <p class="hero-sub">End-to-end, asynchronous revenue cycle management built for mid-sized hospitals and growing clinics. We combine <strong>certified human expertise</strong> with <strong>AI precision</strong> so your team can focus entirely on patient care.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Request Free Revenue Audit
+        </a>
+        <a href="#services" class="btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          Explore Solutions
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat">
+          <div class="hstat-num c">&gt;98%</div>
+          <div class="hstat-label">Clean claim rate target</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-num e">32–40d</div>
+          <div class="hstat-label">A/R benchmark goal</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-num b">24/7</div>
+          <div class="hstat-label">Async processing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Dashboard -->
+    <div class="hero-visual reveal" style="transition-delay:.15s;position:relative">
+      <div class="float-card fc-top">
+        <div class="fc-icon b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div><div class="fc-val">$2.4M</div><div class="fc-lbl">Recovered This Month</div></div>
+      </div>
+      <div class="hero-dash">
+        <div class="hd-head">
+          <span class="hd-title">Revenue Intelligence Dashboard</span>
+          <span class="hd-live"><span class="hd-live-dot"></span>Live</span>
+        </div>
+        <div class="hd-kpis">
+          <div class="hdkpi"><div class="hdkpi-val g">97.8%</div><div class="hdkpi-label">Clean Claims</div></div>
+          <div class="hdkpi"><div class="hdkpi-val b">33d</div><div class="hdkpi-label">Days in A/R</div></div>
+          <div class="hdkpi"><div class="hdkpi-val">4.2%</div><div class="hdkpi-label">Denial Rate</div></div>
+        </div>
+        <div class="hd-bars">
+          <div class="hdb-row">
+            <div class="hdb-top"><span>Prior Auth Approval</span><span>91%</span></div>
+            <div class="hdb-track"><div class="hdb-fill fill-b" style="width:91%"></div></div>
+          </div>
+          <div class="hdb-row">
+            <div class="hdb-top"><span>Net Collection Rate</span><span>96.2%</span></div>
+            <div class="hdb-track"><div class="hdb-fill fill-e" style="width:96.2%"></div></div>
+          </div>
+          <div class="hdb-row">
+            <div class="hdb-top"><span>Denial Recovery</span><span>87%</span></div>
+            <div class="hdb-track"><div class="hdb-fill fill-b" style="width:87%"></div></div>
+          </div>
+          <div class="hdb-row">
+            <div class="hdb-top"><span>Charge Capture Lag</span><span>2.1 Days</span></div>
+            <div class="hdb-track"><div class="hdb-fill fill-w" style="width:28%"></div></div>
+          </div>
+        </div>
+        <div class="hd-chips">
+          <span class="hdc"><span class="dot" style="background:#10B981"></span>Eligibility</span>
+          <span class="hdc"><span class="dot" style="background:#0EA5E9"></span>Prior Auth</span>
+          <span class="hdc"><span class="dot" style="background:#F59E0B"></span>Denial Mgmt</span>
+          <span class="hdc"><span class="dot" style="background:#8B5CF6"></span>AR Follow-Up</span>
+          <span class="hdc ai-tag">AI Active</span>
+        </div>
+      </div>
+      <div class="float-card fc-bot">
+        <div class="fc-icon e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="fc-val">HIPAA</div><div class="fc-lbl">Fully Compliant</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ TRUST BAND ════════════════════════════════════════════════════════════ -->
+<div id="trust">
+  <div class="trust-inner">
+    <span class="trust-label">Certified &amp; Compliant</span>
+    <div class="trust-sep"></div>
+    <div class="trust-items">
+      <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>HIPAA Compliant</div>
+      <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>SOC 2 Type II</div>
+      <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>HITRUST Framework</div>
+      <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>AAPC Certified Coders</div>
+      <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>EHR Agnostic</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SERVICES ══════════════════════════════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div class="services-intro reveal">
+      <div class="section-eyebrow">Core Services</div>
+      <h2 class="section-h2">End-to-end revenue cycle coverage — <span class="grad">front to back.</span></h2>
+      <p class="section-sub" style="margin:0 auto">Six specialized service lines covering every phase of the patient financial journey, powered by AI, validated by certified specialists.</p>
+    </div>
+    <div class="svc-grid">
+
+      <div class="svc-card reveal">
+        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="svc-phase phase-front">◾ Patient Access — Front End</div>
+        <h3>Eligibility &amp; Benefits Verification</h3>
+        <p>Automated, pre-service financial clearance to eliminate downstream denials. Our AI engine verifies active coverage, co-pays, deductibles, and in/out-of-network status through real-time EDI 270/271 transactions — before the patient ever arrives.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">95%</div><div class="svcm-label">Automation rate</div></div>
+          <div class="svcm"><div class="svcm-val">&lt;30s</div><div class="svcm-label">Verify time</div></div>
+          <div class="svcm"><div class="svcm-val">↓40%</div><div class="svcm-label">Front-end denials</div></div>
+        </div>
+        <a href="#" class="svc-link">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc-card reveal">
+        <div class="svc-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
+        <div class="svc-phase phase-front">◾ Patient Access — Front End</div>
+        <h3>Prior Authorization</h3>
+        <p>The #1 administrative burden in healthcare, eliminated. Our Intelligent Authorization workflow determines auth necessity from live payer rules, auto-extracts clinical documentation from your EHR, submits to payer portals, and tracks status to resolution. Fully compliant with the CMS 2026 Prior Auth Final Rule.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">72hr</div><div class="svcm-label">Urgent turnaround</div></div>
+          <div class="svcm"><div class="svcm-val">↓60%</div><div class="svcm-label">Admin hours</div></div>
+          <div class="svcm"><div class="svcm-val">CMS</div><div class="svcm-label">2026 Compliant</div></div>
+        </div>
+        <a href="#" class="svc-link">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc-card reveal">
+        <div class="svc-icon vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>
+        <div class="svc-phase phase-mid">◾ Mid-Cycle — Clinical Integrity</div>
+        <h3>Medical Coding</h3>
+        <p>Hybrid Intelligence coding pairs advanced NLP engines with AAPC/AHIMA-certified coders who validate every claim. This dual-layer approach guarantees &gt;95% coding accuracy, reduces DNFC days, and keeps pace with 2026 telehealth, E&amp;M, and virtual supervision coding mandates.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">95%+</div><div class="svcm-label">Accuracy</div></div>
+          <div class="svcm"><div class="svcm-val">AAPC</div><div class="svcm-label">Certified</div></div>
+          <div class="svcm"><div class="svcm-val">AI+Human</div><div class="svcm-label">Hybrid model</div></div>
+        </div>
+        <a href="#" class="svc-link">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc-card reveal">
+        <div class="svc-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+        <div class="svc-phase phase-back">◾ Revenue Recovery — Back End</div>
+        <h3>Denial Management &amp; Appeals</h3>
+        <p>We transform denial management from a reactive fire-drill into a predictive prevention engine. SkyLight's analytics identifies root-cause denial trends by payer, service line, and physician. For denied claims, AI drafts medically defensible, payer-specific appeal letters while our specialist team files and escalates to resolution.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">40%</div><div class="svcm-label">Recoverable</div></div>
+          <div class="svcm"><div class="svcm-val">↓50%</div><div class="svcm-label">Denial reduction</div></div>
+          <div class="svcm"><div class="svcm-val">AI</div><div class="svcm-label">Appeal drafting</div></div>
+        </div>
+        <a href="#" class="svc-link">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc-card reveal">
+        <div class="svc-icon em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="svc-phase phase-back">◾ Revenue Recovery — Back End</div>
+        <h3>AR Follow-Up</h3>
+        <p>Aging AR is where practices silently hemorrhage revenue. SkyLight replaces static manual aging reports with algorithmic workflow orchestration — prioritizing high-value, high-probability claims approaching timely filing limits. We systematically target 32–40 days in A/R, delivering measurable liquidity within the first billing cycle.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">32–40d</div><div class="svcm-label">A/R target</div></div>
+          <div class="svcm"><div class="svcm-val">↑25%</div><div class="svcm-label">Cash velocity</div></div>
+          <div class="svcm"><div class="svcm-val">AI</div><div class="svcm-label">Prioritization</div></div>
+        </div>
+        <a href="#" class="svc-link">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc-card highlight reveal">
+        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+        <div class="svc-phase phase-intel">◾ Intelligence Layer</div>
+        <h3>Reporting &amp; Analytics</h3>
+        <p>The Revenue Intelligence Dashboard — your single source of financial truth, in real time. Cloud-based, drill-down visibility by location, payer, procedure, and denial code. We don't just surface data — we surface the specific interventions that improve your financial performance today.</p>
+        <div class="svc-metrics">
+          <div class="svcm"><div class="svcm-val">Real-time</div><div class="svcm-label">Dashboard</div></div>
+          <div class="svcm"><div class="svcm-val">KPI</div><div class="svcm-label">Benchmarking</div></div>
+          <div class="svcm"><div class="svcm-val">AI</div><div class="svcm-label">Anomaly alerts</div></div>
+        </div>
+        <a href="#analytics" class="svc-link">Explore dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ HUMAN + AI HYBRID ══════════════════════════════════════════════════════ -->
+<section id="hybrid">
+  <div class="hybrid-bg">
+    <div class="hybrid-orb1"></div>
+    <div class="hybrid-orb2"></div>
+    <svg class="hybrid-neural" viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <circle cx="100" cy="150" r="3" fill="#0EA5E9"/><circle cx="350" cy="80" r="2" fill="#8B5CF6"/><circle cx="600" cy="200" r="4" fill="#0EA5E9"/><circle cx="850" cy="100" r="2" fill="#8B5CF6"/><circle cx="1100" cy="180" r="3" fill="#0EA5E9"/><circle cx="1300" cy="90" r="2" fill="#22D3EE"/>
+      <circle cx="200" cy="350" r="2" fill="#8B5CF6"/><circle cx="450" cy="280" r="3" fill="#0EA5E9"/><circle cx="700" cy="380" r="4" fill="#22D3EE"/><circle cx="950" cy="300" r="2" fill="#0EA5E9"/><circle cx="1200" cy="360" r="3" fill="#8B5CF6"/>
+      <circle cx="150" cy="500" r="2" fill="#0EA5E9"/><circle cx="400" cy="450" r="3" fill="#22D3EE"/><circle cx="650" cy="520" r="2" fill="#8B5CF6"/><circle cx="900" cy="480" r="4" fill="#0EA5E9"/><circle cx="1150" cy="510" r="2" fill="#22D3EE"/>
+      <line x1="100" y1="150" x2="350" y2="80" stroke="#0EA5E9" stroke-width=".6"/><line x1="350" y1="80" x2="600" y2="200" stroke="#8B5CF6" stroke-width=".5"/><line x1="600" y1="200" x2="850" y2="100" stroke="#0EA5E9" stroke-width=".6"/><line x1="850" y1="100" x2="1100" y2="180" stroke="#22D3EE" stroke-width=".5"/><line x1="1100" y1="180" x2="1300" y2="90" stroke="#8B5CF6" stroke-width=".5"/>
+      <line x1="200" y1="350" x2="450" y2="280" stroke="#22D3EE" stroke-width=".5"/><line x1="450" y1="280" x2="700" y2="380" stroke="#0EA5E9" stroke-width=".6"/><line x1="700" y1="380" x2="950" y2="300" stroke="#8B5CF6" stroke-width=".5"/><line x1="950" y1="300" x2="1200" y2="360" stroke="#0EA5E9" stroke-width=".5"/>
+      <line x1="100" y1="150" x2="200" y2="350" stroke="#8B5CF6" stroke-width=".4"/><line x1="350" y1="80" x2="450" y2="280" stroke="#0EA5E9" stroke-width=".4"/><line x1="600" y1="200" x2="700" y2="380" stroke="#22D3EE" stroke-width=".4"/><line x1="850" y1="100" x2="950" y2="300" stroke="#0EA5E9" stroke-width=".4"/><line x1="1100" y1="180" x2="1200" y2="360" stroke="#8B5CF6" stroke-width=".4"/>
+    </svg>
+  </div>
+  <div class="container">
+    <div class="hybrid-inner">
+      <div class="reveal">
+        <div class="section-eyebrow">The SkyLight Advantage</div>
+        <h2 class="section-h2">The Global <span class="grad">Asynchronous Advantage.</span></h2>
+        <p class="section-sub">SkyLight operates an elite, round-the-clock remote delivery center that processes claims, posts payments, and fights denials overnight — so your clinic staff walk into a clean slate every morning.</p>
+        <p class="hybrid-desc">We are not a software vendor. We are not a generic billing agency. We are a <strong>Hybrid Revenue Intelligence Partner</strong> — combining the scale of enterprise AI with the accountability of dedicated certified specialists who know your practice by name.</p>
+        <div class="hybrid-split">
+          <div class="hs-half">
+            <div class="hs-half-label h">Human Expertise</div>
+            <div class="hs-half-list">
+              <div class="hs-li"><span class="hs-li-dot h"></span>AAPC &amp; AHIMA certified coders</div>
+              <div class="hs-li"><span class="hs-li-dot h"></span>Complex denial &amp; appeals specialists</div>
+              <div class="hs-li"><span class="hs-li-dot h"></span>Dedicated account managers</div>
+              <div class="hs-li"><span class="hs-li-dot h"></span>Clinical documentation review</div>
+            </div>
+          </div>
+          <div class="hs-half" style="border-color:rgba(14,165,233,.2)">
+            <div class="hs-half-label a">AI Automation</div>
+            <div class="hs-half-list">
+              <div class="hs-li"><span class="hs-li-dot a"></span>Real-time eligibility verification</div>
+              <div class="hs-li"><span class="hs-li-dot a"></span>NLP coding suggestions</div>
+              <div class="hs-li"><span class="hs-li-dot a"></span>Predictive denial prevention</div>
+              <div class="hs-li"><span class="hs-li-dot a"></span>Algorithmic AR prioritization</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hybrid-right reveal" style="transition-delay:.15s">
+        <!-- Live dashboard card -->
+        <div class="hc-card">
+          <div class="hc-head">
+            <div class="hc-title">Revenue Operations — Live</div>
+            <div class="hc-live"><span class="hc-live-dot"></span>Live</div>
+          </div>
+          <div class="hc-kpis">
+            <div class="hckpi"><div class="hckpi-val g">97.8%</div><div class="hckpi-label">Clean Claims</div></div>
+            <div class="hckpi"><div class="hckpi-val w">33d</div><div class="hckpi-label">Avg A/R</div></div>
+            <div class="hckpi"><div class="hckpi-val g">96.2%</div><div class="hckpi-label">Net Collection</div></div>
+          </div>
+          <div class="hcb-row">
+            <div class="hcb-top"><span>First-Pass Claim Rate</span><span>97.8%</span></div>
+            <div class="hcb-track"><div class="hcb-fill fill-em" style="width:97.8%"></div></div>
+          </div>
+          <div class="hcb-row">
+            <div class="hcb-top"><span>Prior Auth Approval Rate</span><span>91%</span></div>
+            <div class="hcb-track"><div class="hcb-fill fill-blue" style="width:91%"></div></div>
+          </div>
+          <div class="hcb-row">
+            <div class="hcb-top"><span>Denial Recovery Rate</span><span>87%</span></div>
+            <div class="hcb-track"><div class="hcb-fill fill-warn" style="width:87%"></div></div>
+          </div>
+          <div class="hc-chips">
+            <div class="hcc"><div class="dot" style="background:#10E8A0"></div>Eligibility</div>
+            <div class="hcc"><div class="dot" style="background:#0EA5E9"></div>Prior Auth</div>
+            <div class="hcc"><div class="dot" style="background:#F59E0B"></div>Denial Mgmt</div>
+            <div class="hcc"><div class="dot" style="background:#8B5CF6"></div>AR Follow-Up</div>
+            <div class="hcc ai-tag">AI Active</div>
+          </div>
+        </div>
+
+        <!-- AI hybrid model card -->
+        <div class="ai-full-card">
+          <div class="afc-left">
+            <h3>Human-in-the-Loop Intelligence</h3>
+            <p>Purpose-built AI models trained on healthcare RCM data, working alongside certified human specialists — not replacing them.</p>
+            <div class="afc-steps">
+              <div class="afc-step">
+                <div class="afc-step-num">1</div>
+                <div class="afc-step-text"><h5>AI Intake &amp; Eligibility Check</h5><p>Real-time EDI verification + PA requirement scanning</p></div>
+              </div>
+              <div class="afc-step">
+                <div class="afc-step-num">2</div>
+                <div class="afc-step-text"><h5>Certified Coder Validation</h5><p>AAPC specialists verify AI code suggestions pre-submission</p></div>
+              </div>
+              <div class="afc-step">
+                <div class="afc-step-num">3</div>
+                <div class="afc-step-text"><h5>AI Appeal Drafting + Human Filing</h5><p>Payer-specific appeals drafted in seconds, reviewed by specialists</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="afc-right">
+            <div class="afc-stat-grid">
+              <div class="afc-stat"><div class="afc-stat-val az">95%</div><div class="afc-stat-label">AI automation rate on eligibility</div></div>
+              <div class="afc-stat"><div class="afc-stat-val em">↓50%</div><div class="afc-stat-label">Denial rate reduction</div></div>
+              <div class="afc-stat"><div class="afc-stat-val az">3x</div><div class="afc-stat-label">Faster appeal drafting vs. manual</div></div>
+              <div class="afc-stat"><div class="afc-stat-val em">24/7</div><div class="afc-stat-label">AI processing while humans rest</div></div>
+            </div>
+            <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:9px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;font-family:'JetBrains Mono',monospace">WHY NOT FULLY AUTONOMOUS AI?</div>
+              <p style="font-size:12px;color:var(--text3);line-height:1.55">Healthcare billing requires clinical judgment, payer relationship knowledge, and regulatory expertise that AI cannot yet safely provide alone. Our HITL model gives you AI speed without sacrificing the human advocacy that wins complex disputes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ANALYTICS ══════════════════════════════════════════════════════════════ -->
+<section id="analytics">
+  <div class="analytics-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Reporting &amp; Analytics</div>
+      <h2 class="section-h2">Total Transparency. <span class="grad">Zero Guesswork.</span></h2>
+      <p class="section-sub">The Revenue Intelligence Dashboard is the single source of truth for your practice's financial health — updated in real time, not once a month.</p>
+      <div class="analytics-list">
+        <div class="al-row">
+          <div class="al-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+          <div><h4>Real-Time KPI Monitoring</h4><p>Live tracking of clean claim rate, days in A/R, net collection rate, denial rate, and charge capture lag — drill-down by payer, location, or provider.</p></div>
+        </div>
+        <div class="al-row">
+          <div class="al-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          <div><h4>Peer Benchmarking</h4><p>Compare your financial performance against similar specialties. See exactly where you stand and what industry-best looks like for your specific clinical mix.</p></div>
+        </div>
+        <div class="al-row">
+          <div class="al-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div>
+          <div><h4>Proactive AI Alerts</h4><p>Automated alerts when denial rates spike, A/R aging exceeds thresholds, or payer patterns signal an underpayment opportunity — before it becomes a revenue problem.</p></div>
+        </div>
+        <div class="al-row">
+          <div class="al-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+          <div><h4>Executive Reporting</h4><p>Board-ready monthly summaries, quarterly strategy reviews, and C-suite dashboards that translate revenue cycle performance into strategic financial intelligence.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-scale">
+      <div class="dash-mock">
+        <div class="dm-header">
+          <div class="dm-title">SkyLight Revenue Intelligence</div>
+          <div class="dm-dot"><span></span>Live</div>
+        </div>
+        <div class="dm-kpis">
+          <div class="dm-kpi"><div class="dm-kpi-val g">97.8%</div><div class="dm-kpi-label">Clean Claim Rate</div></div>
+          <div class="dm-kpi"><div class="dm-kpi-val w">33 days</div><div class="dm-kpi-label">Avg. Days in A/R</div></div>
+          <div class="dm-kpi"><div class="dm-kpi-val g">96.2%</div><div class="dm-kpi-label">Net Collection</div></div>
+        </div>
+        <div class="dm-bars-wrap">
+          <div class="dm-bars-title">Denial Rate by Payer</div>
+          <div class="dm-bar-row"><div class="dm-bar-label">Medicare</div><div class="dm-bar-track"><div class="dm-bar-fill" style="width:8%;background:linear-gradient(90deg,#10B981,#34D399)"></div></div><div class="dm-bar-val">3.2%</div></div>
+          <div class="dm-bar-row"><div class="dm-bar-label">Medicaid</div><div class="dm-bar-track"><div class="dm-bar-fill" style="width:15%;background:linear-gradient(90deg,#10B981,#34D399)"></div></div><div class="dm-bar-val">6.1%</div></div>
+          <div class="dm-bar-row"><div class="dm-bar-label">Blue Cross</div><div class="dm-bar-track"><div class="dm-bar-fill" style="width:22%;background:linear-gradient(90deg,#0EA5E9,#22D3EE)"></div></div><div class="dm-bar-val">8.8%</div></div>
+          <div class="dm-bar-row"><div class="dm-bar-label">Aetna</div><div class="dm-bar-track"><div class="dm-bar-fill" style="width:18%;background:linear-gradient(90deg,#0EA5E9,#22D3EE)"></div></div><div class="dm-bar-val">7.3%</div></div>
+          <div class="dm-bar-row"><div class="dm-bar-label">United Health</div><div class="dm-bar-track"><div class="dm-bar-fill" style="width:29%;background:linear-gradient(90deg,#D97706,#FBBF24)"></div></div><div class="dm-bar-val">11.6%</div></div>
+        </div>
+        <div class="dm-bottom-row">
+          <div class="dm-mini"><div class="dm-mini-val" style="color:#10E8A0">$47.2K</div><div class="dm-mini-label">Recovered This Week</div></div>
+          <div class="dm-mini"><div class="dm-mini-val" style="color:#60A5FA">4.2%</div><div class="dm-mini-label">Overall Denial Rate</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ METRICS BAND ═══════════════════════════════════════════════════════════ -->
+<div id="metrics">
+  <div class="metrics-orb"></div>
+  <div class="metrics-grid reveal">
+    <div class="metric-item"><div class="m-num">98<span class="m-suf">%</span></div><div class="m-label">First-pass clean claim rate target</div><div class="m-line"></div></div>
+    <div class="metric-item"><div class="m-num">&lt;<span class="m-suf">35</span></div><div class="m-label">Days in A/R benchmark goal</div><div class="m-line"></div></div>
+    <div class="metric-item"><div class="m-num">95<span class="m-suf">%+</span></div><div class="m-label">Net collection rate target</div><div class="m-line"></div></div>
+    <div class="metric-item"><div class="m-num">&lt;<span class="m-suf">5%</span></div><div class="m-label">Initial denial rate benchmark</div><div class="m-line"></div></div>
+    <div class="metric-item"><div class="m-num">24<span class="m-suf">/7</span></div><div class="m-label">Asynchronous operations</div><div class="m-line"></div></div>
+  </div>
+</div>
+
+<!-- ══ PROCESS ════════════════════════════════════════════════════════════════ -->
+<section id="process">
+  <div class="container">
+    <div class="process-header reveal">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-h2">From onboarding to revenue recovery — <span class="grad">in days, not months.</span></h2>
+      <p style="color:var(--text2);font-size:15px;margin-top:12px;line-height:1.65;max-width:540px;margin-left:auto;margin-right:auto">Zero disruption to your clinical workflow. Our implementation is designed to deliver measurable results within the first billing cycle.</p>
+    </div>
+    <div class="process-steps reveal">
+      <div class="ps">
+        <div class="ps-num">1</div>
+        <div class="ps-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+        <h4>Free Revenue Audit</h4>
+        <p>48-hour analysis of your denial rates, AR aging, and clean claim performance. We pinpoint exactly where revenue is leaking — at zero cost.</p>
+      </div>
+      <div class="ps">
+        <div class="ps-num">2</div>
+        <div class="ps-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg></div>
+        <h4>EHR Integration</h4>
+        <p>Secure API connection to your existing EHR — Epic, Cerner, athenahealth, or any major platform. No migration, no new software to learn.</p>
+      </div>
+      <div class="ps">
+        <div class="ps-num">3</div>
+        <div class="ps-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+        <h4>Team Assignment</h4>
+        <p>Your dedicated specialist team is assigned — certified coders, denial managers, an AR lead, and a named account manager as your single point of contact.</p>
+      </div>
+      <div class="ps">
+        <div class="ps-num">4</div>
+        <div class="ps-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+        <h4>AI + Human Go Live</h4>
+        <p>Full service activation. Your Revenue Intelligence Dashboard goes live. Within 30 days you'll see measurable improvement in clean claim rates and A/R days.</p>
+      </div>
+      <div class="ps">
+        <div class="ps-num">5</div>
+        <div class="ps-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+        <h4>Optimize &amp; Scale</h4>
+        <p>Monthly performance reviews, quarterly strategy sessions, and continuous payer rule updates keep your revenue cycle improving over time.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:52px">
+      <a href="#cta" class="btn-primary">Start with a Free Revenue Audit →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══════════════════════════════════════════════════════════ -->
+<section id="social-proof">
+  <div class="container">
+    <div class="tp-header reveal">
+      <div class="section-eyebrow">Client Results</div>
+      <h2 class="section-h2">What our partners say about <span class="grad">the difference.</span></h2>
+    </div>
+    <div class="tp-grid">
+      <div class="tp-card reveal">
+        <div class="tp-result">+$124K/mo recovered</div>
+        <div class="tp-quote-mark">"</div>
+        <p>We were leaving almost $120,000 on the table every month in denied claims we didn't have the bandwidth to appeal. SkyLight's denial team recovered that within 60 days, and the analytics dashboard showed us exactly why each denial happened so we could prevent it going forward.</p>
+        <div class="tp-author">
+          <div class="tp-avatar">DM</div>
+          <div><div class="tp-name">Dr. Daniel M., MD</div><div class="tp-role">Orthopedic Practice, Texas — 4 Physicians</div></div>
+        </div>
+      </div>
+      <div class="tp-card reveal">
+        <div class="tp-result">A/R: 47 → 31 days</div>
+        <div class="tp-quote-mark">"</div>
+        <p>Our AR was sitting at 47 days when we started with SkyLight. Within one quarter it dropped to 31. They didn't just work the accounts — they identified root causes in our front-end eligibility workflow that were creating downstream denials we'd been fighting for years.</p>
+        <div class="tp-author">
+          <div class="tp-avatar">SL</div>
+          <div><div class="tp-name">Sarah L., Practice Manager</div><div class="tp-role">Multi-Specialty Clinic, Florida — 8 Providers</div></div>
+        </div>
+      </div>
+      <div class="tp-card reveal">
+        <div class="tp-result">Denial rate ↓ 68%</div>
+        <div class="tp-quote-mark">"</div>
+        <p>As a community hospital CFO, I needed an RCM partner with enterprise-grade sophistication at an independent hospital price point. SkyLight cut our denial rate by 68% in six months and gave our executive team a real-time financial visibility we'd never had before.</p>
+        <div class="tp-author">
+          <div class="tp-avatar">MR</div>
+          <div><div class="tp-name">Michael R., CFO</div><div class="tp-role">Community Hospital, Georgia — 120 Beds</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESOURCES ══════════════════════════════════════════════════════════════ -->
+<section id="resources">
+  <div class="container">
+    <div class="res-header-row reveal">
+      <div>
+        <div class="section-eyebrow">Insights &amp; Resources</div>
+        <h2 class="section-h2">RCM intelligence that keeps you <span class="grad">ahead.</span></h2>
+      </div>
+      <a href="#" class="btn-outline" style="flex-shrink:0">View all resources →</a>
+    </div>
+    <div class="res-grid reveal">
+      <div class="res-card featured">
+        <div class="res-img az"><svg viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        <div class="res-body">
+          <div class="res-meta"><span class="res-type">Whitepaper</span><span class="res-date">May 2026</span></div>
+          <h3>The 2026 RCM Benchmarking Guide: What Industry-Best Performance Looks Like for Independent Practices &amp; Community Hospitals</h3>
+          <p>Comprehensive KPI analysis across 12 specialties — clean claim rates, A/R days, denial rates — with benchmarks your practice can act on today.</p>
+          <a href="#" class="btn-primary" style="margin-top:16px;display:inline-flex;font-size:12.5px;padding:9px 16px">Download Free Guide</a>
+        </div>
+      </div>
+      <div class="res-card">
+        <div class="res-img em"><svg viewBox="0 0 24 24" fill="none" stroke="#10E8A0" stroke-width="1.5" stroke-linecap="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+        <div class="res-body">
+          <div class="res-meta"><span class="res-type">Blog</span><span class="res-date">Apr 2026</span></div>
+          <h3>CMS 2026 Prior Authorization Rule: What Your Practice Needs to Know</h3>
+          <p>7-day standard and 72-hour urgent response mandates are now in effect. Here's what changes for your workflow.</p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--blue);margin-top:12px">Read Article →</a>
+        </div>
+      </div>
+      <div class="res-card">
+        <div class="res-img in"><svg viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+        <div class="res-body">
+          <div class="res-meta"><span class="res-type">Tool</span><span class="res-date">Interactive</span></div>
+          <h3>Revenue Leakage Calculator</h3>
+          <p>Enter your monthly charges and denial rate to see your estimated annual revenue loss — and recovery potential with SkyLight.</p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--blue);margin-top:12px">Try Calculator →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA BAND ═══════════════════════════════════════════════════════════════ -->
+<section id="cta">
+  <div class="cta-orb"></div>
+  <div class="cta-inner reveal">
+    <div class="section-eyebrow">Free Revenue Assessment</div>
+    <h2>Discover Where Your Revenue Is Leaking.</h2>
+    <p>Get a custom RCM audit from our team — no obligation, no generic report. We analyze your specific payer mix, denial trends, and A/R aging to quantify your revenue recovery opportunity. Results in 48 hours.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-cta-em">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Request Free Revenue Audit
+      </a>
+      <a href="tel:+18005550101" class="btn-cta-ghost">📞 (800) 555-0101</a>
+    </div>
+    <div class="cta-trust-row">
+      <span class="ctr-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>No commitment required</span>
+      <span class="ctr-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Custom analysis — not a template</span>
+      <span class="ctr-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Results in 48 hours</span>
+      <span class="ctr-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>HIPAA compliant</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ═════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <div class="footer-logo-icon">
+            <svg viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="4" fill="url(#lg-ft)" opacity=".9"/>
+              <path d="M11 2L11 7M11 15L11 20M2 11L7 11M15 11L20 11" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+              <defs><linearGradient id="lg-ft" x1="7" y1="7" x2="15" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#0EA5E9"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>
+            </svg>
+          </div>
+          <span class="footer-logo-wm">SkyLight <span>RCM</span></span>
+        </div>
+        <p class="footer-desc">Illuminating the Revenue Cycle for independent practices and community hospitals. Human + AI Hybrid Intelligence — certified specialist expertise, powered by machine precision.</p>
+        <div class="footer-socials">
+          <div class="fsoc">in</div>
+          <div class="fsoc">𝕏</div>
+          <div class="fsoc">f</div>
+          <div class="fsoc">▶</div>
+        </div>
+        <div class="footer-contact-card">
+          <div class="footer-contact-card-label">Speak to a Specialist</div>
+          <div class="footer-contact-card-num">(800) 555-0101</div>
+          <div class="footer-contact-card-hours">Mon–Fri, 8am–6pm CT</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Solutions</h5>
+        <ul>
+          <li><a href="#">Eligibility Verification</a></li>
+          <li><a href="#">Prior Authorization</a></li>
+          <li><a href="#">Medical Coding</a></li>
+          <li><a href="#">Denial Management</a></li>
+          <li><a href="#">AR Follow-Up</a></li>
+          <li><a href="#">Reporting &amp; Analytics</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Who We Serve</h5>
+        <ul>
+          <li><a href="#">Mid-Sized Hospitals</a></li>
+          <li><a href="#">Multi-Specialty Clinics</a></li>
+          <li><a href="#">Ambulatory Surgery Centers</a></li>
+          <li><a href="#">Independent Practices</a></li>
+          <li><a href="#">Oncology Practices</a></li>
+          <li><a href="#">Ophthalmology &amp; Plastics</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About SkyLight</a></li>
+          <li><a href="#">Global Delivery Model</a></li>
+          <li><a href="#">Security &amp; Compliance</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="#">2026 Benchmark Report</a></li>
+          <li><a href="#">ROI Calculator</a></li>
+          <li><a href="#">Case Studies</a></li>
+          <li><a href="#">Healthcare Blog</a></li>
+          <li><a href="#">Whitepapers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 SkyLight RCM. All rights reserved. Illuminating the Revenue Cycle.</div>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">HIPAA Notice</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ JAVASCRIPT ═════════════════════════════════════════════════════════════ -->
+<script>
+/* ── Nav: hover handled by CSS; sticky shadow on scroll ── */
+const nav=document.getElementById('main-nav');
+window.addEventListener('scroll',()=>{
+  if(window.scrollY>10){nav.classList.add('scrolled');nav.style.boxShadow='0 2px 24px rgba(0,0,0,.5)';}
+  else{nav.classList.remove('scrolled');nav.style.boxShadow='none';}
+},{passive:true});
+
+/* ── Scroll reveal ── */
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('vis'),i*90);
+      revealObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.07,rootMargin:'0px 0px -48px 0px'});
+document.querySelectorAll('.reveal,.reveal-scale').forEach(el=>revealObs.observe(el));
+
+/* ── Counter animation on metrics ── */
+const metricObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.m-num').forEach(el=>{
+        const text=el.textContent.trim();
+        const match=text.match(/\d+/);
+        if(match){
+          const num=parseInt(match[0]);
+          const prefix=text.split(match[0])[0];
+          const suffix=text.split(match[0])[1]||'';
+          let startTime=null;
+          const dur=1600;
+          function step(ts){
+            if(!startTime)startTime=ts;
+            const p=Math.min((ts-startTime)/dur,1);
+            const ease=1-Math.pow(1-p,3);
+            el.textContent=prefix+Math.floor(ease*num)+suffix;
+            if(p<1)requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+      });
+      metricObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.metrics-grid').forEach(el=>metricObs.observe(el));
+
+/* ── Smooth anchor scrolling ── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+  });
+});
+
+/* ── Bar chart animate on first view ── */
+const barObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.hdb-fill,.hcb-fill,.dm-bar-fill').forEach(b=>{
+        const w=b.style.width;b.style.width='0';
+        setTimeout(()=>{b.style.transition='width 1.2s cubic-bezier(.16,1,.3,1)';b.style.width=w;},100);
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.4});
+document.querySelectorAll('.hero-dash,.hc-card,.dash-mock').forEach(el=>barObs.observe(el));
+</script>
+</body>
+</html>
